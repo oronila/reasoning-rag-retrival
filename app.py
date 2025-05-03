@@ -1,12 +1,16 @@
 import os
 import sys
 import time
-from dotenv import load_dotenv
+# Removed dotenv import as Groq key is no longer needed
+# from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain_groq import ChatGroq
+# Removed ChatGroq import
+# from langchain_groq import ChatGroq
+# Added Ollama import
+from langchain_community.llms import Ollama
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
@@ -18,15 +22,17 @@ from langchain_core.output_parsers import StrOutputParser
 DATA_PATH = "data/"
 VECTORSTORE_PATH = "vectorstore/db_faiss"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2" # Common sentence transformer model
+OLLAMA_MODEL = "llama3" # Specify the Ollama model you have pulled
 
-def load_config():
-    """Load environment variables."""
-    load_dotenv()
-    groq_api_key = os.getenv("GROQ_API_KEY")
-    if not groq_api_key:
-        print("ERROR: GROQ_API_KEY environment variable not set.")
-        sys.exit(1)
-    return groq_api_key
+# Removed load_config function
+# def load_config():
+#     """Load environment variables."""
+#     load_dotenv()
+#     groq_api_key = os.getenv("GROQ_API_KEY")
+#     if not groq_api_key:
+#         print("ERROR: GROQ_API_KEY environment variable not set.")
+#         sys.exit(1)
+#     return groq_api_key
 
 def load_documents(data_path):
     """Load documents from the specified directory."""
@@ -69,10 +75,13 @@ def create_vector_store(texts, embedding_model_name, vectorstore_path):
         print(f"Vector store created and saved in {end_time - start_time:.2f} seconds.")
     return db
 
-def setup_rag_chain(groq_api_key, vector_store):
-    """Setup the RAG chain."""
-    print("Setting up RAG chain with Groq...")
-    llm = ChatGroq(temperature=0, groq_api_key=groq_api_key, model_name="llama3-70b-8192")
+def setup_rag_chain(vector_store):
+    """Setup the RAG chain using Ollama."""
+    print(f"Setting up RAG chain with Ollama model '{OLLAMA_MODEL}'...")
+    # Instantiate Ollama
+    # Assumes Ollama is running on the default http://localhost:11434
+    # Add base_url="<your_ollama_url>" if it's running elsewhere
+    llm = Ollama(model=OLLAMA_MODEL)
 
     retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={'k': 5}) # Retrieve top 5 docs
 
@@ -120,7 +129,8 @@ def ask_question(chain, question):
 
 def main():
     """Main function to run the RAG pipeline."""
-    groq_api_key = load_config()
+    # Removed Groq key loading
+    # groq_api_key = load_config()
 
     # --- Data Ingestion and Vector Store Creation/Loading ---
     # Check if vector store exists, if not, create it
@@ -136,7 +146,8 @@ def main():
         print("Vector store loaded successfully.")
 
     # --- Setup RAG Chain ---
-    rag_chain = setup_rag_chain(groq_api_key, vector_store)
+    # Updated call to setup_rag_chain (no API key needed)
+    rag_chain = setup_rag_chain(vector_store)
 
     # --- Querying ---
     print("Enter your questions (type 'quit' to exit):")

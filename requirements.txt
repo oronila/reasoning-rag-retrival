@@ -4,4 +4,5 @@ langchain-community
 faiss-cpu
 pypdf
 sentence-transformers
-python-dotenv 
+python-dotenv
+langchain-ollama 
