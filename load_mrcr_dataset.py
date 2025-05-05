@@ -18,10 +18,20 @@ os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "1"
 # You might need to specify a split like 'train' or configuration if the default doesn't work.
 try:
     # Try loading the default configuration/split first
+    # Set download_mode to force_redownload if you suspect cache issues, otherwise defaults are usually fine.
+    # Set trust_remote_code=True if the dataset loading script requires it (use with caution)
     ds = load_dataset(REPO_ID)
     print("\nDataset loaded successfully!")
     print("\nDataset structure:")
     print(ds)
+
+    # --- Accessing Dataset Info (includes README/description) ---
+    print("\nDataset Information (including README/description):")
+    print(ds.info)
+    # You can often access specific fields like description directly if needed:
+    # print("\nDescription:")
+    # print(ds.info.description)
+    # -----------------------------------------------------------
 
     # Example: Access the first example from the 'train' split (if it exists)
     if "train" in ds:
