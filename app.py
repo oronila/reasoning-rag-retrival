@@ -5,7 +5,7 @@ import time
 # from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 # Removed ChatGroq import
 # from langchain_groq import ChatGroq
@@ -63,7 +63,8 @@ def split_documents(documents):
 def create_vector_store(texts, embedding_model_name, vectorstore_path):
     """Create or load the vector store."""
     print(f"Initializing embedding model '{embedding_model_name}'...")
-    embeddings = SentenceTransformerEmbeddings(model_name=embedding_model_name)
+    # Use HuggingFaceEmbeddings instead of SentenceTransformerEmbeddings
+    embeddings = HuggingFaceEmbeddings(model_name=embedding_model_name)
 
     if os.path.exists(vectorstore_path):
         print(f"Loading existing vector store from '{vectorstore_path}'...")
@@ -204,7 +205,8 @@ def main():
         vector_store = create_vector_store(texts, EMBEDDING_MODEL, VECTORSTORE_PATH)
     else:
         print(f"Found existing vector store at '{VECTORSTORE_PATH}'. Loading...")
-        embeddings = SentenceTransformerEmbeddings(model_name=EMBEDDING_MODEL)
+        # Use HuggingFaceEmbeddings here as well when loading the store
+        embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
         vector_store = FAISS.load_local(VECTORSTORE_PATH, embeddings, allow_dangerous_deserialization=True)
         print("Vector store loaded successfully.")
 

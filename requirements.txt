@@ -5,4 +5,5 @@ faiss-cpu
 pypdf
 sentence-transformers
 python-dotenv
-langchain-ollama 
+langchain-ollama
+langchain-huggingface 
