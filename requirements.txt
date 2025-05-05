@@ -6,4 +6,6 @@ pypdf
 sentence-transformers
 python-dotenv
 langchain-ollama
-langchain-huggingface 
+langchain-huggingface
+datasets
+pyarrow 
